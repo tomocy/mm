@@ -23,3 +23,14 @@ func loadMaze(name string) ([]string, error) {
 
 	return maze, nil
 }
+
+type maze []string
+
+func (m maze) String() string {
+	bs := make([]byte, 0)
+	for _, line := range m {
+		bs = append(bs, line...)
+	}
+
+	return string(bs)
+}
