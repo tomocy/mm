@@ -2,6 +2,8 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"fmt"
 	"os"
 )
 
@@ -27,10 +29,10 @@ func loadMaze(name string) (maze, error) {
 type maze []string
 
 func (m maze) String() string {
-	bs := make([]byte, 0)
+	buf := new(bytes.Buffer)
 	for _, line := range m {
-		bs = append(bs, line...)
+		fmt.Fprintf(buf, "%s\n", line)
 	}
 
-	return string(bs)
+	return buf.String()
 }
