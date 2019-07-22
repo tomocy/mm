@@ -37,6 +37,24 @@ func activateCookedTerm() error {
 	return cmd.Run()
 }
 
+func readInput() (string, error) {
+	buf := make([]byte, 10)
+	cnt, err := os.Stdin.Read(buf)
+	if err != nil {
+		return "", err
+	}
+
+	if cnt == 1 && buf[0] == 0x1b {
+		return keyEsc, nil
+	}
+
+	return "", nil
+}
+
+const (
+	keyEsc = "ecs"
+)
+
 func loadMaze(name string) (maze, error) {
 	src, err := os.Open(name)
 	if err != nil {
