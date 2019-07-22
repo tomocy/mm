@@ -22,7 +22,9 @@ func activateCBTerm() error {
 	return cmd.Run()
 }
 
-func main() {}
+func main() {
+	defer cleanUp()
+}
 
 func cleanUp() {
 	if err := activateCookedTerm(); err != nil {
