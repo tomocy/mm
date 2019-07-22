@@ -67,6 +67,15 @@ const (
 	keyEsc = "ecs"
 )
 
+func cleanScreen() {
+	fmt.Print("\x1b[2J")
+	moveCursor(0, 0)
+}
+
+func moveCursor(row, col int) {
+	fmt.Printf("\x1b[%d;%df", row, col)
+}
+
 func loadMaze(name string) (maze, error) {
 	src, err := os.Open(name)
 	if err != nil {
