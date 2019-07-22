@@ -67,6 +67,11 @@ const (
 	keyEsc = "ecs"
 )
 
+func printScreen(maze maze) {
+	cleanScreen()
+	fmt.Print(maze)
+}
+
 func cleanScreen() {
 	fmt.Print("\x1b[2J")
 	moveCursor(0, 0)
