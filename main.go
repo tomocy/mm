@@ -24,6 +24,16 @@ func activateCBTerm() error {
 
 func main() {
 	defer cleanUp()
+	for {
+		key, err := readInput()
+		if err != nil {
+			log.Printf("failed to read input: %s\n", err)
+			break
+		}
+		if key == keyEsc {
+			break
+		}
+	}
 }
 
 func cleanUp() {
