@@ -24,7 +24,14 @@ func activateCBTerm() error {
 
 func main() {
 	defer cleanUp()
+	maze, err := loadMaze("./maze.txt")
+	if err != nil {
+		log.Fatalf("failed to load maze: %s\n", err)
+	}
+
 	for {
+		printScreen(maze)
+
 		key, err := readInput()
 		if err != nil {
 			log.Printf("failed to read input: %s\n", err)
@@ -49,38 +56,6 @@ func activateCookedTerm() error {
 	return cmd.Run()
 }
 
-func readInput() (string, error) {
-	buf := make([]byte, 10)
-	cnt, err := os.Stdin.Read(buf)
-	if err != nil {
-		return "", err
-	}
-
-	if cnt == 1 && buf[0] == 0x1b {
-		return keyEsc, nil
-	}
-
-	return string(buf[:cnt]), nil
-}
-
-const (
-	keyEsc = "ecs"
-)
-
-func printScreen(maze maze) {
-	cleanScreen()
-	fmt.Print(maze)
-}
-
-func cleanScreen() {
-	fmt.Print("\x1b[2J")
-	moveCursor(0, 0)
-}
-
-func moveCursor(row, col int) {
-	fmt.Printf("\x1b[%d;%df", row, col)
-}
-
 func loadMaze(name string) (maze, error) {
 	src, err := os.Open(name)
 	if err != nil {
@@ -98,6 +73,20 @@ func loadMaze(name string) (maze, error) {
 	return maze, nil
 }
 
+func printScreen(maze maze) {
+	cleanScreen()
+	fmt.Print(maze)
+}
+
+func cleanScreen() {
+	fmt.Print("\x1b[2J")
+	moveCursor(0, 0)
+}
+
+func moveCursor(row, col int) {
+	fmt.Printf("\x1b[%d;%df", row, col)
+}
+
 type maze []string
 
 func (m maze) String() string {
@@ -108,3 +97,21 @@ func (m maze) String() string {
 
 	return buf.String()
 }
+
+func readInput() (string, error) {
+	buf := make([]byte, 10)
+	cnt, err := os.Stdin.Read(buf)
+	if err != nil {
+		return "", err
+	}
+
+	if cnt == 1 && buf[0] == 0x1b {
+		return keyEsc, nil
+	}
+
+	return string(buf[:cnt]), nil
+}
+
+const (
+	keyEsc = "ecs"
+)
