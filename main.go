@@ -60,7 +60,7 @@ func readInput() (string, error) {
 		return keyEsc, nil
 	}
 
-	return "", nil
+	return string(buf[:cnt]), nil
 }
 
 const (
