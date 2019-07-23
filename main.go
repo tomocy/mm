@@ -24,22 +24,13 @@ func activateCBTerm() error {
 
 func main() {
 	defer cleanUp()
-	maze, err := loadMaze("./maze.txt")
-	if err != nil {
-		log.Fatalf("failed to load maze: %s\n", err)
+	game := new(game)
+	if err := game.load("./maze.txt"); err != nil {
+		log.Fatalf("failed for game to load: %s\n", err)
 	}
 
-	for {
-		printScreen(maze)
-
-		key, err := readInput()
-		if err != nil {
-			log.Printf("failed to read input: %s\n", err)
-			break
-		}
-		if key == keyEsc {
-			break
-		}
+	if err := game.start(); err != nil {
+		log.Printf("failed for game to start: %s\n", err)
 	}
 }
 
@@ -54,20 +45,6 @@ func activateCookedTerm() error {
 	cmd.Stdin = os.Stdin
 
 	return cmd.Run()
-}
-
-func printScreen(maze maze) {
-	cleanScreen()
-	fmt.Print(maze)
-}
-
-func cleanScreen() {
-	fmt.Print("\x1b[2J")
-	moveCursor(0, 0)
-}
-
-func moveCursor(row, col int) {
-	fmt.Printf("\x1b[%d;%df", row, col)
 }
 
 type game struct {
@@ -102,6 +79,36 @@ func loadMaze(name string) (maze, error) {
 	}
 
 	return maze, nil
+}
+
+func (g *game) start() error {
+	for {
+		printScreen(g.maze)
+
+		key, err := readInput()
+		if err != nil {
+			return err
+		}
+		if key == keyEsc {
+			break
+		}
+	}
+
+	return nil
+}
+
+func printScreen(maze maze) {
+	cleanScreen()
+	fmt.Print(maze)
+}
+
+func cleanScreen() {
+	fmt.Print("\x1b[2J")
+	moveCursor(0, 0)
+}
+
+func moveCursor(row, col int) {
+	fmt.Printf("\x1b[%d;%df", row, col)
 }
 
 type maze []string
