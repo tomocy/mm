@@ -184,3 +184,39 @@ type player struct {
 type position struct {
 	row, col int
 }
+
+func (p *player) move(maze maze, direction string) {
+	p.position.row, p.position.col = makeMove(maze, direction, p.position.row, p.position.col)
+}
+
+func makeMove(maze maze, direction string, oldRow, oldCol int) (int, int) {
+	row, col := oldRow, oldCol
+	switch direction {
+	case keyUp:
+		row--
+		if row < 0 {
+			row = len(maze) - 1
+		}
+	case keyDown:
+		row++
+		if len(maze) <= row {
+			row = 0
+		}
+	case keyRight:
+		col++
+		if len(maze[0]) <= col {
+			col = 0
+		}
+	case keyLeft:
+		col--
+		if col < 0 {
+			col = len(maze[0]) - 1
+		}
+	}
+
+	if maze[row][col] == '#' {
+		row, col = oldRow, oldCol
+	}
+
+	return row, col
+}
