@@ -87,6 +87,11 @@ func moveCursor(row, col int) {
 	fmt.Printf("\x1b[%d;%df", row, col)
 }
 
+type game struct {
+	maze   maze
+	player player
+}
+
 type maze []string
 
 func (m maze) String() string {
