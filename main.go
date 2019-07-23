@@ -115,3 +115,9 @@ func readInput() (string, error) {
 const (
 	keyEsc = "ecs"
 )
+
+type player struct {
+	position struct {
+		row, col int
+	}
+}
