@@ -153,12 +153,28 @@ func readInput() (string, error) {
 	if cnt == 1 && buf[0] == 0x1b {
 		return keyEsc, nil
 	}
+	if 3 <= cnt && buf[0] == 0x1b && buf[1] == '[' {
+		switch buf[2] {
+		case 'A':
+			return keyUp, nil
+		case 'B':
+			return keyDown, nil
+		case 'C':
+			return keyRight, nil
+		case 'D':
+			return keyLeft, nil
+		}
+	}
 
 	return string(buf[:cnt]), nil
 }
 
 const (
-	keyEsc = "ecs"
+	keyEsc   = "ecs"
+	keyUp    = "up"
+	keyDown  = "down"
+	keyRight = "right"
+	keyLeft  = "left"
 )
 
 type player struct {
