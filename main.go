@@ -116,7 +116,16 @@ type maze []string
 func (m maze) String() string {
 	buf := new(bytes.Buffer)
 	for _, line := range m {
-		fmt.Fprintf(buf, "%s\n", line)
+		for _, char := range line {
+			target := ' '
+			if char == '#' {
+				target = char
+			}
+
+			buf.WriteRune(target)
+		}
+
+		buf.WriteByte('\n')
 	}
 
 	return buf.String()
