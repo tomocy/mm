@@ -56,23 +56,6 @@ func activateCookedTerm() error {
 	return cmd.Run()
 }
 
-func loadMaze(name string) (maze, error) {
-	src, err := os.Open(name)
-	if err != nil {
-		return nil, err
-	}
-	defer src.Close()
-
-	var maze maze
-	scanner := bufio.NewScanner(src)
-	for scanner.Scan() {
-		line := scanner.Text()
-		maze = append(maze, line)
-	}
-
-	return maze, nil
-}
-
 func printScreen(maze maze) {
 	cleanScreen()
 	fmt.Print(maze)
@@ -92,6 +75,35 @@ type game struct {
 	player player
 }
 
+func (g *game) load(name string) error {
+	var err error
+	g.maze, err = loadMaze(name)
+	if err != nil {
+		return err
+	}
+
+	g.player = g.maze.findPlayer()
+
+	return nil
+}
+
+func loadMaze(name string) (maze, error) {
+	src, err := os.Open(name)
+	if err != nil {
+		return nil, err
+	}
+	defer src.Close()
+
+	var maze maze
+	scanner := bufio.NewScanner(src)
+	for scanner.Scan() {
+		line := scanner.Text()
+		maze = append(maze, line)
+	}
+
+	return maze, nil
+}
+
 type maze []string
 
 func (m maze) String() string {
@@ -102,6 +114,27 @@ func (m maze) String() string {
 
 	return buf.String()
 }
+
+func (m maze) findPlayer() player {
+	for row, line := range m {
+		for col, level := range line {
+			if string(level) == levelPlayer {
+				return player{
+					position: position{
+						row: row,
+						col: col,
+					},
+				}
+			}
+		}
+	}
+
+	return player{}
+}
+
+const (
+	levelPlayer = "P"
+)
 
 func readInput() (string, error) {
 	buf := make([]byte, 10)
@@ -122,7 +155,9 @@ const (
 )
 
 type player struct {
-	position struct {
-		row, col int
-	}
+	position position
+}
+
+type position struct {
+	row, col int
 }
