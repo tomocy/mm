@@ -125,7 +125,7 @@ func loadPlayer(maze maze) (player, error) {
 
 func (g *game) start() error {
 	for {
-		printScreen(g.maze, g.player)
+		g.flush()
 
 		key, err := readInput()
 		if err != nil {
@@ -141,20 +141,27 @@ func (g *game) start() error {
 	return nil
 }
 
-func printScreen(maze maze, player player) {
+func (g *game) flush() {
 	cleanScreen()
-	fmt.Println(maze)
 
-	fmt.Println(player.position)
-
-	moveCursor(player.position.row+1, player.position.col+1)
-	fmt.Print(levelPlayer)
-	moveCursor(player.position.row+1, player.position.col+1)
+	g.flushMaze()
+	fmt.Println(g.player.position)
+	g.flushPlayer()
 }
 
 func cleanScreen() {
 	fmt.Print("\x1b[2J")
 	moveCursor(0, 0)
+}
+
+func (g *game) flushMaze() {
+	fmt.Println(g.maze)
+}
+
+func (g *game) flushPlayer() {
+	moveCursor(g.player.position.row+1, g.player.position.col+1)
+	fmt.Print(levelPlayer)
+	moveCursor(g.player.position.row+1, g.player.position.col+1)
 }
 
 func moveCursor(row, col int) {
