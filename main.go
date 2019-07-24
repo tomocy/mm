@@ -151,7 +151,7 @@ func (g *game) flush() {
 
 func cleanScreen() {
 	fmt.Print("\x1b[2J")
-	moveCursor(0, 0)
+	moveCursor(point{0, 0})
 }
 
 func (g *game) flushMaze() {
@@ -159,13 +159,13 @@ func (g *game) flushMaze() {
 }
 
 func (g *game) flushPlayer() {
-	moveCursor(g.player.position.y+1, g.player.position.x+1)
+	moveCursor(g.player.position)
 	fmt.Print(levelPlayer)
-	moveCursor(g.player.position.y+1, g.player.position.x+1)
+	moveCursor(g.player.position)
 }
 
-func moveCursor(row, col int) {
-	fmt.Printf("\x1b[%d;%df", row, col)
+func moveCursor(point point) {
+	fmt.Printf("\x1b[%d;%df", point.y+1, point.x+1)
 }
 
 func (g *game) movePlayer(key key) {
@@ -242,37 +242,40 @@ type point struct {
 }
 
 func (p *player) move(maze maze, key key) {
-	p.position.y, p.position.x = move(maze, key, p.position.y, p.position.x)
+	p.position = move(maze, key, p.position)
 }
 
-func move(maze maze, key key, oldY, oldX int) (int, int) {
-	y, x := oldY, oldX
+func move(maze maze, key key, oldPos point) point {
+	pos := point{
+		x: oldPos.x,
+		y: oldPos.y,
+	}
 	switch key {
 	case keyUp:
-		y--
-		if y < 0 {
-			y = len(maze) - 1
+		pos.y--
+		if pos.y < 0 {
+			pos.y = len(maze) - 1
 		}
 	case keyDown:
-		y++
-		if len(maze) <= y {
-			y = 0
+		pos.y++
+		if len(maze) <= pos.y {
+			pos.y = 0
 		}
 	case keyRight:
-		x++
-		if len(maze[0]) <= x {
-			x = 0
+		pos.x++
+		if len(maze[0]) <= pos.x {
+			pos.x = 0
 		}
 	case keyLeft:
-		x--
-		if x < 0 {
-			x = len(maze[0]) - 1
+		pos.x--
+		if pos.x < 0 {
+			pos.x = len(maze[0]) - 1
 		}
 	}
 
-	if maze[y][x] == '#' {
-		y, x = oldY, oldX
+	if maze[pos.y][pos.x] == '#' {
+		pos = oldPos
 	}
 
-	return y, x
+	return pos
 }
