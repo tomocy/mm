@@ -38,6 +38,8 @@ func cleanUp() {
 	if err := activateCookedTerm(); err != nil {
 		log.Fatalf("failed to activate cooked termainal: %s\n", err)
 	}
+
+	cleanScreen()
 }
 
 func activateCookedTerm() error {
