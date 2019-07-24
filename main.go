@@ -192,11 +192,6 @@ func (m maze) String() string {
 	return buf.String()
 }
 
-const (
-	levelPlayer = "P"
-	levelBlock  = "#"
-)
-
 func readKey() (key, error) {
 	buf := make([]byte, 10)
 	cnt, err := os.Stdin.Read(buf)
@@ -273,9 +268,14 @@ func move(maze maze, key key, oldPos point) point {
 		}
 	}
 
-	if maze[pos.y][pos.x] == '#' {
+	if string(maze[pos.y][pos.x]) == levelBlock {
 		pos = oldPos
 	}
 
 	return pos
 }
+
+const (
+	levelPlayer = "P"
+	levelBlock  = "#"
+)
