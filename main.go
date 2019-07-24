@@ -103,11 +103,13 @@ func (g *game) start() error {
 
 func printScreen(maze maze, player player) {
 	cleanScreen()
-	fmt.Print(maze)
+	fmt.Println(maze)
 
-	moveCursor(player.position.row, player.position.col)
+	fmt.Println(player.position)
+
+	moveCursor(player.position.row+1, player.position.col+1)
 	fmt.Print(levelPlayer)
-	moveCursor(player.position.row, player.position.col)
+	moveCursor(player.position.row+1, player.position.col+1)
 }
 
 func cleanScreen() {
@@ -211,23 +213,23 @@ func makeMove(maze maze, direction string, oldRow, oldCol int) (int, int) {
 	switch direction {
 	case keyUp:
 		row--
-		if row <= 0 {
-			row = len(maze)
+		if row < 0 {
+			row = len(maze) - 1
 		}
 	case keyDown:
 		row++
-		if len(maze)+1 <= row {
+		if len(maze) <= row {
 			row = 0
 		}
 	case keyRight:
 		col++
-		if len(maze[0])+1 <= col {
+		if len(maze[0]) <= col {
 			col = 0
 		}
 	case keyLeft:
 		col--
-		if col <= 0 {
-			col = len(maze[0])
+		if col < 0 {
+			col = len(maze[0]) - 1
 		}
 	}
 
