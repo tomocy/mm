@@ -145,7 +145,7 @@ func (g *game) flush() {
 	cleanScreen()
 
 	g.flushMaze()
-	fmt.Println(g.player.position)
+	g.flushDebugMessage()
 	g.flushPlayer()
 }
 
@@ -156,6 +156,10 @@ func cleanScreen() {
 
 func (g *game) flushMaze() {
 	fmt.Println(g.maze)
+}
+
+func (g *game) flushDebugMessage() {
+	fmt.Println(g.player.position)
 }
 
 func (g *game) flushPlayer() {
