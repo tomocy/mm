@@ -83,7 +83,7 @@ func loadMaze(name string) (maze, error) {
 
 func (g *game) start() error {
 	for {
-		printScreen(g.maze)
+		printScreen(g.maze, g.player)
 
 		key, err := readInput()
 		if err != nil {
@@ -97,9 +97,13 @@ func (g *game) start() error {
 	return nil
 }
 
-func printScreen(maze maze) {
+func printScreen(maze maze, player player) {
 	cleanScreen()
 	fmt.Print(maze)
+
+	moveCursor(player.position.row, player.position.col)
+	fmt.Print(levelPlayer)
+	moveCursor(player.position.row, player.position.col)
 }
 
 func cleanScreen() {
