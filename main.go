@@ -135,7 +135,7 @@ func (g *game) start() error {
 			break
 		}
 
-		g.player.move(g.maze, key)
+		g.movePlayer(key)
 	}
 
 	return nil
@@ -166,6 +166,10 @@ func (g *game) flushPlayer() {
 
 func moveCursor(row, col int) {
 	fmt.Printf("\x1b[%d;%df", row, col)
+}
+
+func (g *game) movePlayer(key key) {
+	g.player.move(g.maze, key)
 }
 
 type maze []string
@@ -237,10 +241,10 @@ type position struct {
 }
 
 func (p *player) move(maze maze, key key) {
-	p.position.row, p.position.col = makeMove(maze, key, p.position.row, p.position.col)
+	p.position.row, p.position.col = move(maze, key, p.position.row, p.position.col)
 }
 
-func makeMove(maze maze, key key, oldRow, oldCol int) (int, int) {
+func move(maze maze, key key, oldRow, oldCol int) (int, int) {
 	row, col := oldRow, oldCol
 	switch key {
 	case keyUp:
