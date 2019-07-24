@@ -30,7 +30,7 @@ func main() {
 		log.Fatalf("failed for game to load: %s\n", err)
 	}
 
-	if err := game.start(); err != nil {
+	if err := game.run(); err != nil {
 		log.Printf("failed for game to start: %s\n", err)
 	}
 }
@@ -123,7 +123,7 @@ func loadPlayer(maze maze) (player, error) {
 	return player{}, errors.New("no player in given maze")
 }
 
-func (g *game) start() error {
+func (g *game) run() error {
 	for {
 		g.flush()
 
