@@ -211,23 +211,23 @@ func makeMove(maze maze, direction string, oldRow, oldCol int) (int, int) {
 	switch direction {
 	case keyUp:
 		row--
-		if row < 0 {
-			row = len(maze) - 1
+		if row <= 0 {
+			row = len(maze)
 		}
 	case keyDown:
 		row++
-		if len(maze) <= row {
+		if len(maze)+1 <= row {
 			row = 0
 		}
 	case keyRight:
 		col++
-		if len(maze[0]) <= col {
+		if len(maze[0])+1 <= col {
 			col = 0
 		}
 	case keyLeft:
 		col--
-		if col < 0 {
-			col = len(maze[0]) - 1
+		if col <= 0 {
+			col = len(maze[0])
 		}
 	}
 
