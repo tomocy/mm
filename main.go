@@ -179,7 +179,7 @@ func (m maze) String() string {
 	for _, line := range m {
 		for _, char := range line {
 			target := ' '
-			if char == '#' {
+			if string(char) == levelBlock {
 				target = char
 			}
 
@@ -194,6 +194,7 @@ func (m maze) String() string {
 
 const (
 	levelPlayer = "P"
+	levelBlock  = "#"
 )
 
 func readKey() (key, error) {
