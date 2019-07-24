@@ -107,13 +107,13 @@ func (g *game) loadPlayer() error {
 }
 
 func loadPlayer(maze maze) (player, error) {
-	for row, line := range maze {
-		for col, level := range line {
+	for y, line := range maze {
+		for x, level := range line {
 			if string(level) == levelPlayer {
 				return player{
-					position: position{
-						row: row,
-						col: col,
+					position: point{
+						y: y,
+						x: x,
 					},
 				}, nil
 			}
@@ -159,9 +159,9 @@ func (g *game) flushMaze() {
 }
 
 func (g *game) flushPlayer() {
-	moveCursor(g.player.position.row+1, g.player.position.col+1)
+	moveCursor(g.player.position.y+1, g.player.position.x+1)
 	fmt.Print(levelPlayer)
-	moveCursor(g.player.position.row+1, g.player.position.col+1)
+	moveCursor(g.player.position.y+1, g.player.position.x+1)
 }
 
 func moveCursor(row, col int) {
@@ -234,45 +234,45 @@ const (
 type key string
 
 type player struct {
-	position position
+	position point
 }
 
-type position struct {
-	row, col int
+type point struct {
+	x, y int
 }
 
 func (p *player) move(maze maze, key key) {
-	p.position.row, p.position.col = move(maze, key, p.position.row, p.position.col)
+	p.position.y, p.position.x = move(maze, key, p.position.y, p.position.x)
 }
 
-func move(maze maze, key key, oldRow, oldCol int) (int, int) {
-	row, col := oldRow, oldCol
+func move(maze maze, key key, oldY, oldX int) (int, int) {
+	y, x := oldY, oldX
 	switch key {
 	case keyUp:
-		row--
-		if row < 0 {
-			row = len(maze) - 1
+		y--
+		if y < 0 {
+			y = len(maze) - 1
 		}
 	case keyDown:
-		row++
-		if len(maze) <= row {
-			row = 0
+		y++
+		if len(maze) <= y {
+			y = 0
 		}
 	case keyRight:
-		col++
-		if len(maze[0]) <= col {
-			col = 0
+		x++
+		if len(maze[0]) <= x {
+			x = 0
 		}
 	case keyLeft:
-		col--
-		if col < 0 {
-			col = len(maze[0]) - 1
+		x--
+		if x < 0 {
+			x = len(maze[0]) - 1
 		}
 	}
 
-	if maze[row][col] == '#' {
-		row, col = oldRow, oldCol
+	if maze[y][x] == '#' {
+		y, x = oldY, oldX
 	}
 
-	return row, col
+	return y, x
 }
