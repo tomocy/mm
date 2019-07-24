@@ -127,7 +127,7 @@ func (g *game) start() error {
 	for {
 		g.flush()
 
-		key, err := readInput()
+		key, err := readKey()
 		if err != nil {
 			return err
 		}
@@ -192,7 +192,7 @@ const (
 	levelPlayer = "P"
 )
 
-func readInput() (string, error) {
+func readKey() (key, error) {
 	buf := make([]byte, 10)
 	cnt, err := os.Stdin.Read(buf)
 	if err != nil {
@@ -215,7 +215,7 @@ func readInput() (string, error) {
 		}
 	}
 
-	return string(buf[:cnt]), nil
+	return "", nil
 }
 
 const (
@@ -226,6 +226,8 @@ const (
 	keyLeft  = "left"
 )
 
+type key string
+
 type player struct {
 	position position
 }
@@ -234,13 +236,13 @@ type position struct {
 	row, col int
 }
 
-func (p *player) move(maze maze, direction string) {
-	p.position.row, p.position.col = makeMove(maze, direction, p.position.row, p.position.col)
+func (p *player) move(maze maze, key key) {
+	p.position.row, p.position.col = makeMove(maze, key, p.position.row, p.position.col)
 }
 
-func makeMove(maze maze, direction string, oldRow, oldCol int) (int, int) {
+func makeMove(maze maze, key key, oldRow, oldCol int) (int, int) {
 	row, col := oldRow, oldCol
-	switch direction {
+	switch key {
 	case keyUp:
 		row--
 		if row < 0 {
