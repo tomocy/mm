@@ -92,6 +92,8 @@ func (g *game) start() error {
 		if key == keyEsc {
 			break
 		}
+
+		g.player.move(g.maze, key)
 	}
 
 	return nil
