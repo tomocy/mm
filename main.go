@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -55,13 +56,24 @@ type game struct {
 }
 
 func (g *game) load(name string) error {
-	var err error
-	g.maze, err = loadMaze(name)
+	if err := g.loadMaze(name); err != nil {
+		return err
+	}
+
+	if err := g.loadPlayer(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (g *game) loadMaze(name string) error {
+	maze, err := loadMaze(name)
 	if err != nil {
 		return err
 	}
 
-	g.player = g.maze.findPlayer()
+	g.maze = maze
 
 	return nil
 }
@@ -81,6 +93,34 @@ func loadMaze(name string) (maze, error) {
 	}
 
 	return maze, nil
+}
+
+func (g *game) loadPlayer() error {
+	player, err := loadPlayer(g.maze)
+	if err != nil {
+		return err
+	}
+
+	g.player = player
+
+	return nil
+}
+
+func loadPlayer(maze maze) (player, error) {
+	for row, line := range maze {
+		for col, level := range line {
+			if string(level) == levelPlayer {
+				return player{
+					position: position{
+						row: row,
+						col: col,
+					},
+				}, nil
+			}
+		}
+	}
+
+	return player{}, errors.New("no player in given maze")
 }
 
 func (g *game) start() error {
@@ -139,23 +179,6 @@ func (m maze) String() string {
 	}
 
 	return buf.String()
-}
-
-func (m maze) findPlayer() player {
-	for row, line := range m {
-		for col, level := range line {
-			if string(level) == levelPlayer {
-				return player{
-					position: position{
-						row: row,
-						col: col,
-					},
-				}
-			}
-		}
-	}
-
-	return player{}
 }
 
 const (
