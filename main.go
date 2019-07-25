@@ -180,29 +180,34 @@ func (m maze) String() string {
 }
 
 func (m maze) findPlayer() (player, error) {
-	pos, err := m.find(levelPlayer)
-	if err != nil {
-		return player{}, err
+	poss := m.find(levelPlayer)
+	if len(poss) <= 0 {
+		return player{}, errors.New("no player")
 	}
 
 	return player{
-		position: pos,
+		position: poss[0],
 	}, nil
 }
 
-func (m maze) find(level string) (point, error) {
+func (m maze) find(level string) []point {
+	var founds []point
 	for y, line := range m {
 		for x, char := range line {
-			if string(char) == level {
-				return point{
-					x: x,
-					y: y,
-				}, nil
+			if string(char) != level {
+				continue
 			}
+
+			found := point{
+				x: x,
+				y: y,
+			}
+
+			founds = append(founds, found)
 		}
 	}
 
-	return point{}, errors.New("no such level")
+	return founds
 }
 
 func readKey() (key, error) {
