@@ -207,7 +207,7 @@ func (m maze) String() string {
 	for _, line := range m {
 		for _, char := range line {
 			target := ' '
-			if string(char) == levelBlock {
+			if string(char) == levelBlock || string(char) == levelDot {
 				target = char
 			}
 
