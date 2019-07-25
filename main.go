@@ -144,6 +144,8 @@ func (g *game) run() error {
 
 		g.moveGhosts()
 		g.movePlayer(key)
+
+		g.detectCollision()
 	}
 
 	return nil
@@ -208,6 +210,15 @@ func (g *game) moveGhosts() {
 
 func (g *game) movePlayer(key key) {
 	g.player.move(g.maze, key)
+}
+
+func (g *game) detectCollision() {
+	for _, ghost := range g.ghosts {
+		if ghost.position == g.player.position {
+			g.player.lives--
+			break
+		}
+	}
 }
 
 type maze []string
