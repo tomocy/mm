@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"math/rand"
 	"os"
 	"os/exec"
 )
@@ -132,6 +133,7 @@ func (g *game) run() error {
 			break
 		}
 
+		g.moveGhosts()
 		g.movePlayer(key)
 	}
 
@@ -158,6 +160,7 @@ func (g *game) flushMaze() {
 
 func (g *game) flushDebugMessage() {
 	fmt.Println(g.player.position)
+	fmt.Println(g.ghosts)
 }
 
 func (g *game) flushGhosts() {
@@ -180,6 +183,12 @@ func moveCursor(point point) {
 
 func (g *game) movePlayer(key key) {
 	g.player.move(g.maze, key)
+}
+
+func (g *game) moveGhosts() {
+	for i := range g.ghosts {
+		g.ghosts[i].moveRandomly(g.maze)
+	}
 }
 
 type maze []string
@@ -340,4 +349,16 @@ const (
 
 type ghost struct {
 	position point
+}
+
+func (g *ghost) moveRandomly(maze maze) {
+	dir := randomDirection()
+	g.position = move(maze, dir, g.position)
+}
+
+func randomDirection() key {
+	x := rand.Intn(4)
+	dirs := [...]key{keyUp, keyDown, keyRight, keyLeft}
+
+	return dirs[x]
 }
