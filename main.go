@@ -153,7 +153,7 @@ func (g *game) flush() {
 	cleanScreen()
 
 	g.flushMaze()
-	g.flushDebugMessage()
+	g.flushMeta()
 	g.flushGhosts()
 	g.flushPlayer()
 }
@@ -165,6 +165,12 @@ func cleanScreen() {
 
 func (g *game) flushMaze() {
 	fmt.Println(g.maze)
+}
+
+func (g *game) flushMeta() {
+	moveCursor(point{x: 0, y: len(g.maze) + 1})
+	fmt.Println("Score; ", g.player.score)
+	fmt.Println("Lives: ", g.player.lives)
 }
 
 func (g *game) flushDebugMessage() {
