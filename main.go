@@ -53,14 +53,17 @@ func activateCookedTerm() error {
 type game struct {
 	maze   maze
 	player player
+	ghosts []ghost
 }
 
 func (g *game) load(name string) error {
 	if err := g.loadMaze(name); err != nil {
 		return err
 	}
-
 	if err := g.loadPlayer(); err != nil {
+		return err
+	}
+	if err := g.loadGhosts(); err != nil {
 		return err
 	}
 
@@ -102,6 +105,17 @@ func (g *game) loadPlayer() error {
 	}
 
 	g.player = player
+
+	return nil
+}
+
+func (g *game) loadGhosts() error {
+	ghosts, err := g.maze.findGhosts()
+	if err != nil {
+		return err
+	}
+
+	g.ghosts = ghosts
 
 	return nil
 }
@@ -188,6 +202,22 @@ func (m maze) findPlayer() (player, error) {
 	return player{
 		position: poss[0],
 	}, nil
+}
+
+func (m maze) findGhosts() ([]ghost, error) {
+	poss := m.find(levelGhost)
+	if len(poss) <= 0 {
+		return nil, errors.New("no ghost")
+	}
+
+	ghosts := make([]ghost, len(poss))
+	for i, pos := range poss {
+		ghosts[i] = ghost{
+			position: pos,
+		}
+	}
+
+	return ghosts, nil
 }
 
 func (m maze) find(level string) []point {
@@ -295,6 +325,7 @@ func move(maze maze, key key, oldPos point) point {
 
 const (
 	levelPlayer = "P"
+	levelGhost  = "G"
 	levelBlock  = "#"
 )
 
