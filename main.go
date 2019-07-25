@@ -148,6 +148,7 @@ func (g *game) run() error {
 		g.movePlayer(key)
 
 		g.detectCollision()
+		g.score()
 	}
 
 	return nil
@@ -223,6 +224,16 @@ func (g *game) detectCollision() {
 	}
 }
 
+func (g *game) score() {
+	if string(g.maze.level(g.player.position)) != levelDot {
+		return
+	}
+
+	g.maze.setLevel(' ', g.player.position)
+	g.dots--
+	g.player.score++
+}
+
 type maze []string
 
 func (m maze) String() string {
@@ -288,6 +299,14 @@ func (m maze) find(level string) []point {
 	}
 
 	return founds
+}
+
+func (m maze) level(point point) byte {
+	return m[point.y][point.x]
+}
+
+func (m maze) setLevel(level byte, point point) {
+	m[point.y] = fmt.Sprintf("%s %s", m[point.y][:point.x], m[point.y][point.x+1:])
 }
 
 func readKey() (key, error) {
