@@ -96,7 +96,7 @@ func loadMaze(name string) (maze, error) {
 }
 
 func (g *game) loadPlayer() error {
-	player, err := loadPlayer(g.maze)
+	player, err := g.maze.findPlayer()
 	if err != nil {
 		return err
 	}
@@ -104,23 +104,6 @@ func (g *game) loadPlayer() error {
 	g.player = player
 
 	return nil
-}
-
-func loadPlayer(maze maze) (player, error) {
-	for y, line := range maze {
-		for x, level := range line {
-			if string(level) == levelPlayer {
-				return player{
-					position: point{
-						y: y,
-						x: x,
-					},
-				}, nil
-			}
-		}
-	}
-
-	return player{}, errors.New("no player in given maze")
 }
 
 func (g *game) run() error {
@@ -194,6 +177,32 @@ func (m maze) String() string {
 	}
 
 	return buf.String()
+}
+
+func (m maze) findPlayer() (player, error) {
+	pos, err := m.find(levelPlayer)
+	if err != nil {
+		return player{}, err
+	}
+
+	return player{
+		position: pos,
+	}, nil
+}
+
+func (m maze) find(level string) (point, error) {
+	for y, line := range m {
+		for x, char := range line {
+			if string(char) == level {
+				return point{
+					x: x,
+					y: y,
+				}, nil
+			}
+		}
+	}
+
+	return point{}, errors.New("no such level")
 }
 
 func readKey() (key, error) {
