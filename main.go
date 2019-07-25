@@ -283,3 +283,7 @@ const (
 	levelPlayer = "P"
 	levelBlock  = "#"
 )
+
+type ghost struct {
+	position point
+}
