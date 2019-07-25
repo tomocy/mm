@@ -138,7 +138,7 @@ func (g *game) run() error {
 		if err != nil {
 			return err
 		}
-		if key == keyEsc {
+		if key == keyEsc || !g.canContinue() {
 			break
 		}
 
@@ -194,6 +194,10 @@ func (g *game) flushPlayer() {
 
 func moveCursor(point point) {
 	fmt.Printf("\x1b[%d;%df", point.y+1, point.x+1)
+}
+
+func (g *game) canContinue() bool {
+	return 0 < g.player.lives && 0 < g.dots
 }
 
 func (g *game) moveGhosts() {
