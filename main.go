@@ -305,6 +305,7 @@ type key string
 
 type player struct {
 	position point
+	lives    int
 }
 
 type point struct {
