@@ -108,6 +108,8 @@ func (g *game) loadPlayer() error {
 		return err
 	}
 
+	player.lives = 1
+
 	g.player = player
 
 	return nil
