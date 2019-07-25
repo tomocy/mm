@@ -143,6 +143,7 @@ func (g *game) flush() {
 
 	g.flushMaze()
 	g.flushDebugMessage()
+	g.flushGhosts()
 	g.flushPlayer()
 }
 
@@ -157,6 +158,14 @@ func (g *game) flushMaze() {
 
 func (g *game) flushDebugMessage() {
 	fmt.Println(g.player.position)
+}
+
+func (g *game) flushGhosts() {
+	for _, ghost := range g.ghosts {
+		moveCursor(ghost.position)
+		fmt.Print(levelGhost)
+		moveCursor(ghost.position)
+	}
 }
 
 func (g *game) flushPlayer() {
