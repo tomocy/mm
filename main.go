@@ -52,10 +52,10 @@ func activateCookedTerm() error {
 }
 
 type game struct {
-	maze    maze
-	player  player
-	ghosts  []ghost
-	numDots int
+	maze   maze
+	player player
+	ghosts []ghost
+	dots   int
 }
 
 func (g *game) load(name string) error {
@@ -127,7 +127,7 @@ func (g *game) loadGhosts() error {
 func (g *game) countDots() {
 	dots := g.maze.find(levelDot)
 
-	g.numDots = len(dots)
+	g.dots = len(dots)
 }
 
 func (g *game) run() error {
