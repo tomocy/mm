@@ -196,14 +196,14 @@ func moveCursor(point point) {
 	fmt.Printf("\x1b[%d;%df", point.y+1, point.x+1)
 }
 
-func (g *game) movePlayer(key key) {
-	g.player.move(g.maze, key)
-}
-
 func (g *game) moveGhosts() {
 	for i := range g.ghosts {
 		g.ghosts[i].moveRandomly(g.maze)
 	}
+}
+
+func (g *game) movePlayer(key key) {
+	g.player.move(g.maze, key)
 }
 
 type maze []string
