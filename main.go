@@ -136,7 +136,7 @@ func (g *game) countDots() {
 type config struct {
 	Player     string `json:"player"`
 	Ghost      string `json:"ghost"`
-	Wall       string `json:"wall"`
+	Block      string `json:"block"`
 	Dot        string `json:"dot"`
 	Pill       string `json:"pill"`
 	Death      string `json:"death"`
