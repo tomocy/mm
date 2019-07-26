@@ -133,6 +133,17 @@ func (g *game) countDots() {
 	g.dots = len(dots)
 }
 
+type config struct {
+	Player     string `json:"player"`
+	Ghost      string `json:"ghost"`
+	Wall       string `json:"wall"`
+	Dot        string `json:"dot"`
+	Pill       string `json:"pill"`
+	Death      string `json:"death"`
+	Space      string `json:"space"`
+	DoUseEmoji bool   `json:"do_use_emoji"`
+}
+
 func (g *game) run() error {
 	keyCh := readKeyAsyncly()
 	g.flush()
