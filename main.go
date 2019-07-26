@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
+	"time"
 )
 
 func init() {
@@ -133,25 +134,80 @@ func (g *game) countDots() {
 }
 
 func (g *game) run() error {
-	for {
-		g.flush()
+	keyCh := readKeyAsyncly()
+	g.flush()
 
-		key, err := readKey()
-		if err != nil {
-			return err
+	for {
+		select {
+		case key := <-keyCh:
+			if key == keyEsc {
+				goto finish
+			}
+
+			g.movePlayer(key)
+		default:
 		}
-		if key == keyEsc || !g.canContinue() {
+
+		if !g.canContinue() {
 			break
 		}
 
 		g.moveGhosts()
-		g.movePlayer(key)
 
 		g.detectCollision()
 		g.score()
+
+		g.flush()
+
+		time.Sleep(200 * time.Millisecond)
 	}
 
+finish:
+
 	return nil
+}
+
+func readKeyAsyncly() <-chan key {
+	ch := make(chan key)
+	go func() {
+		defer close(ch)
+		for {
+			key, err := readKey()
+			if err != nil {
+				key = keyEsc
+			}
+
+			ch <- key
+		}
+	}()
+
+	return ch
+}
+
+func readKey() (key, error) {
+	buf := make([]byte, 10)
+	cnt, err := os.Stdin.Read(buf)
+	if err != nil {
+		return "", err
+	}
+
+	if cnt == 1 && buf[0] == 0x1b {
+		return keyEsc, nil
+	}
+	if 3 <= cnt && buf[0] == 0x1b && buf[1] == '[' {
+		switch buf[2] {
+		case 'A':
+			return keyUp, nil
+		case 'B':
+			return keyDown, nil
+		case 'C':
+			return keyRight, nil
+		case 'D':
+			return keyLeft, nil
+		}
+	}
+
+	return "", nil
 }
 
 func (g *game) flush() {
@@ -307,32 +363,6 @@ func (m maze) level(point point) byte {
 
 func (m maze) setLevel(level byte, point point) {
 	m[point.y] = fmt.Sprintf("%s %s", m[point.y][:point.x], m[point.y][point.x+1:])
-}
-
-func readKey() (key, error) {
-	buf := make([]byte, 10)
-	cnt, err := os.Stdin.Read(buf)
-	if err != nil {
-		return "", err
-	}
-
-	if cnt == 1 && buf[0] == 0x1b {
-		return keyEsc, nil
-	}
-	if 3 <= cnt && buf[0] == 0x1b && buf[1] == '[' {
-		switch buf[2] {
-		case 'A':
-			return keyUp, nil
-		case 'B':
-			return keyDown, nil
-		case 'C':
-			return keyRight, nil
-		case 'D':
-			return keyLeft, nil
-		}
-	}
-
-	return "", nil
 }
 
 const (
