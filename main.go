@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -28,7 +29,7 @@ func activateCBTerm() error {
 func main() {
 	defer cleanUp()
 	game := new(game)
-	if err := game.load("./maze.txt"); err != nil {
+	if err := game.load("./config.json", "./maze.txt"); err != nil {
 		log.Fatalf("failed for game to load: %s\n", err)
 	}
 
@@ -57,10 +58,14 @@ type game struct {
 	player player
 	ghosts []ghost
 	dots   int
+	config config
 }
 
-func (g *game) load(name string) error {
-	if err := g.loadMaze(name); err != nil {
+func (g *game) load(confName, mazeName string) error {
+	if err := g.loadConfig(confName); err != nil {
+		return err
+	}
+	if err := g.loadMaze(mazeName); err != nil {
 		return err
 	}
 	if err := g.loadPlayer(); err != nil {
@@ -73,6 +78,32 @@ func (g *game) load(name string) error {
 	g.countDots()
 
 	return nil
+}
+
+func (g *game) loadConfig(name string) error {
+	conf, err := loadConfig(name)
+	if err != nil {
+		return err
+	}
+
+	g.config = conf
+
+	return nil
+}
+
+func loadConfig(name string) (config, error) {
+	var conf config
+	src, err := os.Open(name)
+	if err != nil {
+		return conf, err
+	}
+	defer src.Close()
+
+	if err := json.NewDecoder(src).Decode(&conf); err != nil {
+		return conf, err
+	}
+
+	return conf, nil
 }
 
 func (g *game) loadMaze(name string) error {
