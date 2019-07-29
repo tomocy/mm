@@ -284,7 +284,7 @@ func (g *game) flushDebugMessage() {
 func (g *game) flushGhosts() {
 	for _, ghost := range g.ghosts {
 		moveCursor(ghost.position)
-		fmt.Print(levelGhost)
+		fmt.Print(g.config.Ghost)
 		moveCursor(ghost.position)
 	}
 }
