@@ -219,7 +219,7 @@ func (g *game) run() error {
 
 		g.flush()
 
-		time.Sleep(200 * time.Millisecond)
+		time.Sleep(1 * time.Second / 10)
 	}
 
 finish:
