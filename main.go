@@ -20,7 +20,7 @@ func main() {
 	defer cleanUp()
 
 	game := new(game)
-	if err := game.load("./config.json", flag.mazeFilename); err != nil {
+	if err := game.load(flag.configFilename, flag.mazeFilename); err != nil {
 		log.Fatalf("failed for game to load: %s\n", err)
 	}
 
@@ -31,6 +31,7 @@ func main() {
 
 func parseFlag() *flag {
 	parsed := new(flag)
+	flagPkg.StringVar(&parsed.configFilename, "config", "./config.json", "path to config json file")
 	flagPkg.StringVar(&parsed.mazeFilename, "maze", "./maze.txt", "path to maze file")
 	flagPkg.Parse()
 
@@ -38,7 +39,8 @@ func parseFlag() *flag {
 }
 
 type flag struct {
-	mazeFilename string
+	configFilename string
+	mazeFilename   string
 }
 
 func prepare() {
