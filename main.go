@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	flagPkg "flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -13,7 +14,34 @@ import (
 	"time"
 )
 
-func init() {
+func main() {
+	flag := parseFlag()
+	prepare()
+	defer cleanUp()
+
+	game := new(game)
+	if err := game.load("./config.json", flag.mazeFilename); err != nil {
+		log.Fatalf("failed for game to load: %s\n", err)
+	}
+
+	if err := game.run(); err != nil {
+		log.Printf("failed for game to start: %s\n", err)
+	}
+}
+
+func parseFlag() *flag {
+	parsed := new(flag)
+	flagPkg.StringVar(&parsed.mazeFilename, "maze", "./maze.txt", "path to maze file")
+	flagPkg.Parse()
+
+	return parsed
+}
+
+type flag struct {
+	mazeFilename string
+}
+
+func prepare() {
 	if err := activateCBTerm(); err != nil {
 		log.Fatalf("failed to activate cbreak terminal: %s\n", err)
 	}
@@ -24,22 +52,6 @@ func activateCBTerm() error {
 	cmd.Stdin = os.Stdin
 
 	return cmd.Run()
-}
-
-func main() {
-	defer cleanUp()
-	game := new(game)
-	if err := game.load("./config.json", "./maze.txt"); err != nil {
-		log.Fatalf("failed for game to load: %s\n", err)
-	}
-
-	if err := game.run(); err != nil {
-		log.Printf("failed for game to start: %s\n", err)
-	}
-}
-
-type flag struct {
-	mazeFilename string
 }
 
 func cleanUp() {
