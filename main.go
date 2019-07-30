@@ -38,6 +38,10 @@ func main() {
 	}
 }
 
+type flag struct {
+	mazeFilename string
+}
+
 func cleanUp() {
 	if err := activateCookedTerm(); err != nil {
 		log.Fatalf("failed to activate cooked termainal: %s\n", err)
